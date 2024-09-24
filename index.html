@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ESP32 Dashboard</title>
+    <title>Raspberry Pi WebSocket Dashboard</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -23,14 +23,27 @@
     </style>
 </head>
 <body>
-    <h1>ESP32 Control Dashboard</h1>
+    <h1>Raspberry Pi WebSocket Control</h1>
     <button id="ledToggle">Toggle LED</button>
 
     <script>
+        // Replace with the IP address of your Raspberry Pi
+        const socket = new WebSocket('ws://192.168.1.72:8000');
+
+        socket.onopen = function() {
+            console.log('WebSocket connection established');
+        };
+
+        socket.onmessage = function(event) {
+            alert(event.data); // Show message from Raspberry Pi
+        };
+
+        socket.onerror = function(error) {
+            console.error('WebSocket error:', error);
+        };
+
         document.getElementById('ledToggle').addEventListener('click', function() {
-            fetch('http://your-esp32-ip-address/toggle')
-                .then(response => response.text())
-                .then(data => console.log(data));
+            socket.send('toggleLED'); // Send command to Raspberry Pi to toggle the LED
         });
     </script>
 </body>
